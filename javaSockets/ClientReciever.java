@@ -36,7 +36,7 @@ public class ClientReciever implements Runnable {
                 info.id = m.dst;
                 break;
             case UNICAST:
-                prefix += "PRIVATE MESSAGE from ";
+                prefix += "PM from ";
             default:
                 if (m.src < 0) prefix += "SERVER: ";
                 else prefix += m.src + ": ";

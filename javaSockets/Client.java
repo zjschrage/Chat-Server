@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.Optional;
 
 public class Client {
 	
@@ -46,7 +45,7 @@ public class Client {
 					if (isCommand(cmd)) {
 						handleCommands(args);
 					} 
-					else {
+					else if (line.length() > 0) {
 						formatError();
 					}
                 }
@@ -74,6 +73,7 @@ public class Client {
 		switch (cmd) {
             case ls -> cmdList();
             case send -> cmdSend(args);
+			case help -> cmdHelp(args);
 			case close -> cmdClose();
 			default -> throw new IllegalArgumentException("Unexpected value: " + cmd);
         }
@@ -120,6 +120,23 @@ public class Client {
 		}
 	}
 
+	private void cmdHelp(String[] args) {
+		if (args.length == 1) {
+			System.out.println(Constants.HELP_1);
+			System.out.println(Constants.HELP_2);
+			System.out.println();
+			System.out.println(Constants.LIST_COMMANDS);
+		} else {
+			switch (Command.valueOf(args[1].trim())) {
+				case close -> System.out.println(Constants.HELP_CLOSE);
+				case help -> System.out.println(Constants.HELP_HELP);
+				case ls -> System.out.println(Constants.HELP_LS);
+				case send -> System.out.println(Constants.HELP_SEND);
+			}
+		}
+		System.out.println();
+	}
+
 	private void cmdClose() throws IOException {
 		Message m = new Message();
 		m.src = (byte) info.id;
@@ -131,7 +148,6 @@ public class Client {
 
 	private void formatError() {
 		System.out.println(Constants.MESSAGE_FORMAT_ERR);
-		System.out.println(Constants.MESSAGE_FORMAT);
 	}
 
 	private MessageType getMessageType(String s) {
