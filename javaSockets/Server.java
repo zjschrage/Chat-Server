@@ -20,7 +20,6 @@ public class Server {
 		sockets = new ArrayList<>();
 		users = new HashMap<>();
 		try {
-			//server = new ServerSocket(port);
 			InetAddress ip = InetAddress.getLocalHost();
 			server = new ServerSocket(port, 0, ip);
 			System.out.println("Server started at " + ip.getHostAddress());
