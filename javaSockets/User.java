@@ -48,6 +48,15 @@ public class User implements Runnable {
 		out.write(m.streamify(), 0, Message.MAX_MESSAGE_LEN);
 	}
 
+    private void sendUsrNotFound() throws IOException {
+        Message m = new Message();
+        m.src = (byte) -1;
+        m.dst = id;
+        m.type = (byte) MessageType.UNICAST.ordinal();
+        m.message = Constants.UNKNOWN_USER_ERROR.getBytes();
+        send(serverOut, m);
+    }
+
     private void notifyClientId(byte id) {
         Message m = new Message();
         m.dst = (byte) id;
@@ -82,6 +91,7 @@ public class User implements Runnable {
     private void unicast(Message m) throws IOException {
         byte dst = m.dst;
         if (users.containsKey(dst)) send(users.get(dst).getOutputStream(), m);
+        else sendUsrNotFound();
     }
 
     private void broadcast(Message m) throws IOException {
@@ -95,13 +105,12 @@ public class User implements Runnable {
     }
 
     private void list(Message m) throws IOException {
-        byte src = m.src;
         String listOfUsers = "";
         for (byte id : users.keySet()) {
             listOfUsers += id + " ";
         }
         m.message = listOfUsers.getBytes();
-        if (users.containsKey(src)) send(users.get(src).getOutputStream(), m);
+        send(serverOut, m);
     }
 
 }

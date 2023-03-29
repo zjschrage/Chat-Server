@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Optional;
 
 public class Client {
 	
@@ -44,6 +45,9 @@ public class Client {
 					String cmd = args[0];
 					if (isCommand(cmd)) {
 						handleCommands(args);
+					} 
+					else {
+						formatError();
 					}
                 }
 			} catch (IOException e) {
@@ -90,14 +94,13 @@ public class Client {
 		Message m = new Message();
 		m.src = (byte) info.id;
 		try {
-			MessageType mt = MessageType.valueOf(args[1]);
+			MessageType mt = getMessageType(args[1]);
 			m.type = (byte) mt.ordinal();
 			int msgStartsAt = 2;
 			String msg = "";
 			switch(mt) {
 				case UNICAST:
-					m.dst = Byte.parseByte(args[2]);
-					msgStartsAt = 3;
+					m.dst = Byte.parseByte(args[1]);
 					break;
 				case BROADCAST:
 					m.dst = (byte) -1;
@@ -129,6 +132,11 @@ public class Client {
 	private void formatError() {
 		System.out.println(Constants.MESSAGE_FORMAT_ERR);
 		System.out.println(Constants.MESSAGE_FORMAT);
+	}
+
+	private MessageType getMessageType(String s) {
+		if (s.trim().equals("all")) return MessageType.BROADCAST;
+		else return MessageType.UNICAST;
 	}
 
 	private void close() {

@@ -38,7 +38,8 @@ public class ClientReciever implements Runnable {
             case UNICAST:
                 prefix += "PRIVATE MESSAGE from ";
             default:
-                prefix += m.src + ": ";
+                if (m.src < 0) prefix += "SERVER: ";
+                else prefix += m.src + ": ";
                 String msg = new String(m.message);
                 System.out.println(prefix + msg);
         }
