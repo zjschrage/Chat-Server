@@ -26,7 +26,7 @@ public class Message {
         stream[0] = src;
         stream[1] = dst;
         stream[2] = type;
-        for (int i = 0; i < message.length; i++) {
+        for (int i = 0; i < Math.min(message.length, MAX_MESSAGE_LEN - HDR_ENTRIES); i++) {
             stream[i + HDR_ENTRIES] = message[i];
         }
         return stream;
